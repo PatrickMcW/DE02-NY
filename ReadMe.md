@@ -14,7 +14,7 @@
 
 ---
 
-NOTE: the `./` notation in filepaths below is meant to indicate the directory you have downloaded all the project folders to. As an example, if you downloaded this project to `C:\Users\Students\Downloads\PatrickM` then the notation `./2.1/2.1_java_program.zip` would mean the zip file could be found at `C:\Users\Students\Downloads\PatrickM\2.1\2.1_java_program.zip`
+**NOTE:** the `./` notation in filepaths below is meant to indicate the directory you have downloaded all the project folders to. As an example, if you downloaded this project to `C:\Users\Students\Downloads\PatrickM` then the notation `./2.1/2.1_java_program.zip` would mean the zip file could be found at `C:\Users\Students\Downloads\PatrickM\2.1\2.1_java_program.zip`
 
 (windows explorer seems to be compatible with linux directory/folder delimiter)
 
