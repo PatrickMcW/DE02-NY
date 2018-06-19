@@ -21,6 +21,7 @@ NOTE: the `./` notation in filepaths below is meant to indicate the directory yo
 ---
 
 ### <a id="211">2.1.1</a> `Java and RDBMS`
+
 ---
 
   #### <a id="211a">2.1.1a</a> `Core Java`
@@ -37,38 +38,43 @@ NOTE: the `./` notation in filepaths below is meant to indicate the directory yo
 
   #### In eclipse:
     **Update** ‘/CaseStudy/src/com/cdw/resources/db.properties’ to match your database connection values, user/pass, etc (which is determined in the following MySQL section)
-</br>
+
     **Run** ‘/CaseStudy/src/com/cdw/runner/ChooseRunner.java’ to run the program.(Running from any location should only run this file anyway)
+
 ---
+
   ### <a id="211b">2.1.1b</a> `RDBMS/MySQL`
 * File path of exported tables is:
 		`./2.1/2.1_cdw_sapp_tables.zip`
  **Extract** and run files to create DB and insert data
+
 ---
 ---
+
 ### <a id="221">2.2.1</a> `Hadoop/HDFS/Data Warehousing`
 * Sqoop scripts/commands found in:
-		`./2.2.1/`
-</br>
+		`./2.2.1/` <br></br>
   Working directory in Hadoop/HDFS will be:
   `/Credit_Card_System/`
-  based on instruction in Functional Requirement doc
-</br>
+  based on instruction in Functional Requirement doc <br></br>
   See above sqoop commands for subdirectories/target-directories
 ---
+
 ### <a id="222">2.2.2</a> `Hive and Partition`
 * Hive definitions found at:
 		`./2.2.2/`
-</br>
+<br></br>
 * **Run** cdw_sapp_create_db first, then remaining commands/files can be run in any order. I ran these commands through Ambari Hive worksheets, but I would expect them to work from the command line as well. It may be necessary to select the CDW_SAPP DB from the hive DB dropdown, depending on how you run the commands/scripts/creates.
+
 ---
+
 ### <a id="223">2.2.3</a> `Oozie - all data`
 * Filepath for this section found at:
 		`./2.2.3/`
   The tables defined in 2.2.2 can be used here, or you can **run** the hive commands found in:
       `./2.2.3/hive/`
     to (re)create the tables necessary for this section.
-</br>
+<br></br>
 	**Copy** the coordinator.xml and workflow.xml files in:
       `./2.2.3/oozie/`
     to HDFS:
@@ -76,23 +82,23 @@ NOTE: the `./` notation in filepaths below is meant to indicate the directory yo
 	In the VM running the HDFS, **run** the sqoop commands found in the files at:
       `./2.2.3/sqoop`
   to create the sqoop jobs for this section (2.2.3).
-</br>
+<br></br>
 	**Copy** the jobs.properties file to a directory on the VM running the HDFS. Any directory can be used, I would suggest something like:
       `/root/Documents/PatrickM/223/`
 	In that directory, run
 		  `oozie job -oozie http://localhost:11000/oozie -config job.properties –run`
-</br>
+<br></br>
   **Record** this job ID someone so we can kill it before moving on to the next section (2.2.4).
-</br>
+<br></br>
   * **Note:** while this dataset has no repeated SSNs, the primary key of the customer table is a composite key, which sqoop does not support for merge-key operations. I am not sure what an appropriate split column would be, but to ensure uniqueness, it should be one of the two composite key columns. This feels like it would be an excessive amount of splitting, however.
-</br>
+<br></br>
 
 * Before starting 2.2.4, **kill** the job from 2.2.3. The particular job ID will be different based on your oozie environment/history:
 		  `oozie job -oozie http://localhost:11000/oozie -kill JOB_ID_FROM_223_HERE`
-</br>
+<br></br>
   **Delete** table folders on HDFS under the
       `/Credit_Card_System/`
-</br>
+<br></br>
   directory. We will be re-defining tables to remove the partition for this next part(2.2.4), as instructed by the instructor team.
 ---
 ### <a id="224">2.2.4</a> `Oozie - incremental data`
@@ -101,27 +107,27 @@ We should have a fresh start with empty tables/directories to work from and no j
 
 * Filepath for this section found at:
     `./2.2.4/`
-</br>
+<br></br>
   **Run** the hive commands found in:
       `./2.2.4/hive`
   to create the tables necessary for this section.
-</br>
+<br></br>
   The cdw_all_defs.hql file can be run in one Ambari Hive worksheet. The first three lines of that file drop and recreate the database. This is optional as deleting the table folders at the end of 2.2.3 should give us a blank-enough slate to work from. If not running these commands, simply remove them from the hive worksheet.
-</br>
+<br></br>
   **Copy** the coordinator.xml and workflow.xml files in the above to HDFS:
       `/Credit_Card_System/oozie/224/`
 	In the VM running the HDFS, run the commands found in the files at:
       `./2.2.4/sqoop`
   to create the sqoop jobs for this section (2.2.3).
-</br>
+<br></br>
 	**Copy** the jobs.properties file to a directory on the VM running the HDFS. Any directory can be used, I would suggest something like:
       `/root/Documents/PatrickM/224/`
   In that directory, run
 		`oozie job -oozie http://localhost:11000/oozie -config job.properties –run`
   Record this job ID someone so we can kill it later.
-</br>
+<br></br>
 	* **Note:** incremental append from the CDW_SAPP_CREDITCARD is using TRANSACTION_ID as that should be chronological with “new” data and not the likely randomly generated day/month numbers in the case study data set. An alternative would be to add the “timeid” column that eventually exists in Hive to the MySQL version of the DB and then use incremental lastmodified based on that DATE column.
-</br>
+<br></br>
 
 * To prevent this job from running until 2025, kill the coordinator at your earliest convenience with:
 	   `oozie job -oozie http://localhost:11000/oozie -kill JOB_ID_FROM_224_HERE`
@@ -134,11 +140,12 @@ We should have a fresh start with empty tables/directories to work from and no j
 ### <a id="226">2.2.6</a> `Pig (optional)`
 * Pig scripts found at:
   `./2.2.6/`
-</br>  
+<br></br>
   Scripts are found between the `# start of script` and `# end of script` lines in each section.
-</br>
+<br></br>
   A description of what each script is intended to do is located after the script and preceded by a \# character.
-</br>
+<br></br>
   Each script's section is separated by a line of \= signs.
 ---
+
 [top](#top)
