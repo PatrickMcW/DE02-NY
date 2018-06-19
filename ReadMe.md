@@ -2,15 +2,15 @@
 
 ## Table of Contents
 
-[Section 2.1.1](#211) Java and RDBMS
-[2.1.1a](#211a) Core Java
-[2.1.1b](#211b) RDBMS/MySQL
-[Section 2.2.1](#221) Hadoop/HDFS/Data Warehousing
-[Section 2.2.2](#222) Hive and Partition
-[Section 2.2.3](#223) Oozie - all data
-[Section 2.2.4](#224) Oozie - incremental data
-[Section 2.2.5](#225) Visualization
-[Section 2.2.6](#226) Pig (optional)
+[Section 2.1.1](#211) Java and RDBMS </br>
+[2.1.1a](#211a) Core Java</br>
+[2.1.1b](#211b) RDBMS/MySQL</br>
+[Section 2.2.1](#221) Hadoop/HDFS/Data Warehousing</br>
+[Section 2.2.2](#222) Hive and Partition</br>
+[Section 2.2.3](#223) Oozie - all data</br>
+[Section 2.2.4](#224) Oozie - incremental data</br>
+[Section 2.2.5](#225) Visualization</br>
+[Section 2.2.6](#226) Pig (optional)</br>
 
 ---
 
