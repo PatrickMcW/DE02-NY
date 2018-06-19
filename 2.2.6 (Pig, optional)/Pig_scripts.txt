@@ -1,0 +1,53 @@
+# start of script
+transaction_details = LOAD '/Credit_Card_System/CDW_SAPP_CREDITCARD/part-m-00000'
+USING PigStorage(',') AS
+(id:double, ccn:chararray, timeid:chararray, ssn:int, branch:double, type:chararray, value:double);
+
+grouped_transactions = GROUP transaction_details all;
+transaction_max = FOREACH grouped_transactions GENERATE
+ (MAX(transaction_details.value)) as val;
+filtered_data = FILTER transaction_details BY value == (double)transaction_max.val;
+tran_id_of_max = FOREACH filtered_data GENERATE (int)id;
+DUMP tran_id_of_max;
+# end of script
+
+# prints out the id(s) of max-valued transactions
+=======================
+
+# start of script
+transaction_details = LOAD '/Credit_Card_System/CDW_SAPP_CREDITCARD/part-m-00000'
+USING PigStorage(',') AS
+(id:double, ccn:chararray, timeid:chararray, ssn:int, branch:double, type:chararray, value:double);
+
+grouped_transactions = GROUP transaction_details all;
+transaction_min = FOREACH grouped_transactions GENERATE
+ (MIN(transaction_details.value)) as val;
+filtered_data = FILTER transaction_details BY value == (double)transaction_min.val;
+tran_id_of_min = FOREACH filtered_data GENERATE (int)id;
+DUMP tran_id_of_min;
+# end of script
+
+# prints out the id(s) of min-valued transactions
+=======================
+
+# start of script
+branches = LOAD '/Credit_Card_System/CDW_SAPP_BRANCH/part-r-00000'
+USING PigStorage(',') AS
+(branch_code:INT,branch_name:chararray,branch_street:chararray,branch_city:chararray,
+branch_state:chararray,branch_zip:INT,branch_phone:chararray,last_updated:chararray);
+
+customers = LOAD '/Credit_Card_System/CDW_SAPP_CUSTOMER/part-r-00000'
+USING PigStorage(',') AS
+(cust_ssn:INT,cust_f_name:chararray,cust_m_name:chararray,cust_l_name:chararray,cust_cc_no:chararray,
+cust_street:chararray,cust_city:chararray,cust_state:chararray,cust_country:chararray,cust_zip:INT);
+
+grouped_by_state = COGROUP branches BY branch_state, customers BY cust_state;
+cust_and_branch_count_by_state = FOREACH grouped_by_state GENERATE COUNT(customers.cust_ssn),
+COUNT(branches.branch_code), FLATTEN( branches.branch_state );
+
+dist_c_and_b_count_by_state = DISTINCT cust_and_branch_count_by_state;
+
+DUMP dist_c_and_b_count_by_state;
+# end of script
+
+# prints the number of customers, the number of branches, and the state, for each state (and only once for each state)

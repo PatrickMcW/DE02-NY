@@ -1,0 +1,15 @@
+DROP TABLE IF exists CDW_SAPP_D_TIME;
+
+CREATE EXTERNAL TABLE CDW_SAPP_D_TIME (
+  TIMEID	           VARCHAR(8),
+  DAY	               DECIMaL(2,0),
+  MONTH	             DECIMaL(2,0),
+  QUARTER	           VARCHAR(8),
+  YEAR	             DECIMaL(4,0)
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+ESCAPED BY '\\'
+LINES TERMINATED BY '\n'
+STORED AS textfile
+	LOCATION '/Credit_Card_System/CDW_SAPP_D_TIME';

@@ -1,0 +1,99 @@
+<workflow-app xmlns = "uri:oozie:workflow:0.2" name="224IncrementalWF">
+
+<start to="incrm_sqp_brnch_call"/>
+<!-- sqoops start -->
+  <action name="incrm_sqp_brnch_call">
+    <sqoop xmlns="uri:oozie:sqoop-action:0.2">
+      <job-tracker>${jobTracker}</job-tracker>
+      <name-node>${nameNode}</name-node>
+      <configuration>
+          <property>
+              <name>mapred.job.queue.name</name>
+              <value>${queueName}</value>
+          </property>
+      </configuration>
+      <arg>job</arg>
+      <arg>--meta-connect</arg>
+      <arg>jdbc:hsqldb:hsql://localhost:16000/sqoop</arg>
+      <arg>--exec</arg>
+      <arg>incremental_branch</arg>
+      <archive>/Credit_Card_System/oozie/lib/java-json.jar#java-json.jar</archive>
+
+    </sqoop>
+    <ok to="incrm_sqp_cc_call" />
+    <error to="kill_job" />
+  </action>
+
+
+  <action name="incrm_sqp_cc_call">
+    <sqoop xmlns="uri:oozie:sqoop-action:0.2">
+      <job-tracker>${jobTracker}</job-tracker>
+      <name-node>${nameNode}</name-node>
+      <configuration>
+          <property>
+              <name>mapred.job.queue.name</name>
+              <value>${queueName}</value>
+          </property>
+      </configuration>
+      <arg>job</arg>
+      <arg>--meta-connect</arg>
+      <arg>jdbc:hsqldb:hsql://localhost:16000/sqoop</arg>
+      <arg>--exec</arg>
+      <arg>incremental_creditcard</arg>
+      <archive>/Credit_Card_System/oozie/lib/java-json.jar#java-json.jar</archive>
+
+    </sqoop>
+    <ok to="incrm_sqp_cust_call" />
+    <error to="kill_job" />
+  </action>
+
+  <action name="incrm_sqp_cust_call">
+    <sqoop xmlns="uri:oozie:sqoop-action:0.2">
+      <job-tracker>${jobTracker}</job-tracker>
+      <name-node>${nameNode}</name-node>
+      <configuration>
+          <property>
+              <name>mapred.job.queue.name</name>
+              <value>${queueName}</value>
+          </property>
+      </configuration>
+      <arg>job</arg>
+      <arg>--meta-connect</arg>
+      <arg>jdbc:hsqldb:hsql://localhost:16000/sqoop</arg>
+      <arg>--exec</arg>
+      <arg>incrmntl_cust_part</arg>
+      <archive>/Credit_Card_System/oozie/lib/java-json.jar#java-json.jar</archive>
+
+    </sqoop>
+    <ok to="incrm_sqp_time_call" />
+    <error to="kill_job" />
+  </action>
+
+  <action name="incrm_sqp_time_call">
+    <sqoop xmlns="uri:oozie:sqoop-action:0.2">
+      <job-tracker>${jobTracker}</job-tracker>
+      <name-node>${nameNode}</name-node>
+      <configuration>
+          <property>
+              <name>mapred.job.queue.name</name>
+              <value>${queueName}</value>
+          </property>
+      </configuration>
+      <arg>job</arg>
+      <arg>--meta-connect</arg>
+      <arg>jdbc:hsqldb:hsql://localhost:16000/sqoop</arg>
+      <arg>--exec</arg>
+      <arg>incremental_time</arg>
+      <archive>/Credit_Card_System/oozie/lib/java-json.jar#java-json.jar</archive>
+
+    </sqoop>
+    <ok to="end" />
+    <error to="kill_job" />
+  </action>
+<!-- sqoops end -->
+
+  <kill name = "kill_job">
+    <message>Job killed, error message [${wf:errorMessage()}]</message>
+  </kill>
+  <end name = "end" />
+</workflow-app>

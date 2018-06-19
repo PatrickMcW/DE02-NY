@@ -1,0 +1,23 @@
+<!-- copy to directory of choice in VM, subdirectory /224/, run from that subdirectory -->
+
+<!-- to run, use command
+oozie job -oozie http://localhost:11000/oozie -config job.properties -run -->
+
+<coordinator-app xmlns="uri:oozie:coordinator:0.2" name="Case Study Coordinator 224" frequency="${frequency}" start="${start}" end="${end}" timezone="${timezone}">
+  <!-- EST == UTC-5 -->
+  <!-- 1994-11-05T08:15:30-05:00 corresponds to November 5, 1994, 8:15:30 am, US Eastern Standard Time. -->
+  <controls>
+    <timeout>1</timeout>
+    <concurrency>1</concurrency>
+    <execution>FIFO</execution>
+    <throttle>1</throttle>
+  </controls>
+  <action>
+  <workflow>
+    <app-path>${ccs_path}/oozie/224/workflow.xml</app-path>
+  </workflow>
+  </action>
+</coordinator-app>
+
+<!-- kill a job with
+oozie job -oozie http://localhost:11000/oozie -kill JOB_ID_HERE -->

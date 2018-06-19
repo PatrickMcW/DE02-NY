@@ -1,0 +1,145 @@
+<workflow-app xmlns = "uri:oozie:workflow:0.2" name = "223CreateWF">
+
+  <start to = "sqp_brnch_jb_call" />
+<!-- sqoops start -->
+    <action name="sqp_brnch_jb_call">
+      <sqoop xmlns="uri:oozie:sqoop-action:0.2">
+        <job-tracker>${jobTracker}</job-tracker>
+        <name-node>${nameNode}</name-node>
+        <configuration>
+            <property>
+                <name>mapred.job.queue.name</name>
+                <value>${queueName}</value>
+            </property>
+        </configuration>
+        <arg>job</arg>
+        <arg>--meta-connect</arg>
+        <arg>jdbc:hsqldb:hsql://localhost:16000/sqoop</arg>
+        <arg>--exec</arg>
+        <arg>branch_sqoop_all</arg>
+        <archive>/Credit_Card_System/oozie/lib/java-json.jar#java-json.jar</archive>
+
+      </sqoop>
+      <ok to="sqp_cc_jb_call" />
+      <error to="kill_job" />
+    </action>
+
+
+    <action name="sqp_cc_jb_call">
+      <sqoop xmlns="uri:oozie:sqoop-action:0.2">
+        <job-tracker>${jobTracker}</job-tracker>
+        <name-node>${nameNode}</name-node>
+        <configuration>
+            <property>
+                <name>mapred.job.queue.name</name>
+                <value>${queueName}</value>
+            </property>
+        </configuration>
+        <arg>job</arg>
+        <arg>--meta-connect</arg>
+        <arg>jdbc:hsqldb:hsql://localhost:16000/sqoop</arg>
+        <arg>--exec</arg>
+        <arg>creditcard_sqoop_all</arg>
+        <archive>/Credit_Card_System/oozie/lib/java-json.jar#java-json.jar</archive>
+
+      </sqoop>
+      <ok to="sqp_cust_jb_call" />
+      <error to="kill_job" />
+    </action>
+
+    <action name="sqp_cust_jb_call">
+      <sqoop xmlns="uri:oozie:sqoop-action:0.2">
+        <job-tracker>${jobTracker}</job-tracker>
+        <name-node>${nameNode}</name-node>
+        <configuration>
+            <property>
+                <name>mapred.job.queue.name</name>
+                <value>${queueName}</value>
+            </property>
+        </configuration>
+        <arg>job</arg>
+        <arg>--meta-connect</arg>
+        <arg>jdbc:hsqldb:hsql://localhost:16000/sqoop</arg>
+        <arg>--exec</arg>
+        <arg>cust_unpart_sqoop_all</arg>
+        <archive>/Credit_Card_System/oozie/lib/java-json.jar#java-json.jar</archive>
+
+      </sqoop>
+      <ok to="sqp_time_jb_call" />
+      <error to="kill_job" />
+    </action>
+
+    <action name="sqp_time_jb_call">
+      <sqoop xmlns="uri:oozie:sqoop-action:0.2">
+        <job-tracker>${jobTracker}</job-tracker>
+        <name-node>${nameNode}</name-node>
+        <configuration>
+            <property>
+                <name>mapred.job.queue.name</name>
+                <value>${queueName}</value>
+            </property>
+        </configuration>
+        <arg>job</arg>
+        <arg>--meta-connect</arg>
+        <arg>jdbc:hsqldb:hsql://localhost:16000/sqoop</arg>
+        <arg>--exec</arg>
+        <arg>time_sqoop_all</arg>
+        <archive>/Credit_Card_System/oozie/lib/java-json.jar#java-json.jar</archive>
+
+      </sqoop>
+      <ok to="Cre_Ext_Brnch_Table" />
+      <error to="kill_job" />
+    </action>
+<!-- sqoops end -->
+
+<!-- hive define tables start -->
+    <action name = "Cre_Ext_Brnch_Table">
+      <hive xmlns = "uri:oozie:hive-action:0.4">
+        <job-tracker>${jobTracker}</job-tracker>
+        <name-node>${nameNode}</name-node>
+        <script>${hive_path}/cdw_sapp_d_branch.hql</script>
+      </hive>
+
+    <ok to = "Cre_Ext_CC_Table" />
+    <error to = "kill_job" />
+    </action>
+
+    <action name = "Cre_Ext_CC_Table">
+      <hive xmlns = "uri:oozie:hive-action:0.4">
+        <job-tracker>${jobTracker}</job-tracker>
+        <name-node>${nameNode}</name-node>
+        <script>${hive_path}/cdw_sapp_f_creditcard.hql</script>
+      </hive>
+
+    <ok to = "Cre_Ext_Cust_Table" />
+    <error to = "kill_job" />
+    </action>
+
+    <action name = "Cre_Ext_Cust_Table">
+      <hive xmlns = "uri:oozie:hive-action:0.4">
+        <job-tracker>${jobTracker}</job-tracker>
+        <name-node>${nameNode}</name-node>
+        <script>${hive_path}/cdw_sapp_d_customer_part.hql</script>
+      </hive>
+    <ok to = "Cre_Ext_Time_Table" />
+    <error to = "kill_job" />
+    </action>
+
+    <action name = "Cre_Ext_Time_Table">
+      <hive xmlns = "uri:oozie:hive-action:0.4">
+        <job-tracker>${jobTracker}</job-tracker>
+        <name-node>${nameNode}</name-node>
+        <script>${hive_path}/cdw_sapp_d_time.hql</script>
+      </hive>
+
+    <ok to = "end" />
+    <error to = "kill_job" />
+    </action>
+
+<!-- hive define tables start -->
+
+  <kill name = "kill_job">
+    <message>Job killed, error message [${wf:errorMessage()}]</message>
+  </kill>
+  <end name = "end" />
+</workflow-app>
